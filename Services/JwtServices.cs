@@ -1,6 +1,7 @@
 ﻿using Institute_Management.Handler;
 using Institute_Management.Models;
 using Institute_Management.Models.api;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -35,6 +36,11 @@ namespace Institute_Management.Services
                 AccessToken = token,
                 ExpiresIn = (int)TimeSpan.FromMinutes(Convert.ToDouble(_configuration["JwtConfig:TokenValidityMins"])).TotalSeconds
             };
+        }
+
+        internal async Task<string?> Authenticate(LoginRequest request)
+        {
+            throw new NotImplementedException();
         }
 
         private string GenerateJwtToken(User user)

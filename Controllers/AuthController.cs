@@ -2,6 +2,7 @@
 using Institute_Management.Models.api;
 using Institute_Management.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -19,7 +20,7 @@ namespace Institute_Management.Controllers
 
         [AllowAnonymous]
         [HttpPost("Login")]
-        public async Task<ActionResult<LoginRespond>> Login(Loginmodules request)
+        public async Task<ActionResult<LoginRespond>> Login([FromBody] LoginRequest request)
         {
             var result = await _jwtServices.Authenticate(request);
             if (result is null)
@@ -30,19 +31,19 @@ namespace Institute_Management.Controllers
             return View(result);
         }
 
-        [AllowAnonymous]
-        [HttpGet("Register")]
-        public IActionResult Register()
-        {
-            return View();
-        }
+        //[AllowAnonymous]
+        //[HttpGet("Register")]
+        //public IActionResult Register()
+        //{
+        //    return View();
+        //}
 
-        [AllowAnonymous]
-        [HttpPost("Register")]
-        public IActionResult Register(Loginmodules request)
-        {
-            // TO DO: implement register logic here
-            return View();
-        }
+        //[AllowAnonymous]
+        //[HttpPost("Register")]
+        //public IActionResult Register(Loginmodules request)
+        //{
+        //    // TO DO: implement register logic here
+        //    return View();
+        //}
     }
 }
