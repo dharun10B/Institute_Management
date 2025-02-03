@@ -1,65 +1,48 @@
-﻿using Institute_Management.Services;
-using System;
+﻿using Institute_Management.Models;
+using Institute_Management.Models.api;
+using Institute_Management.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Institute_Management.Models;
-using Microsoft.EntityFrameworkCore;
-
-
+using System.Threading.Tasks;
 
 namespace Institute_Management.Controllers
 {
-    [Route("api/auth")]
+    [Route("api/[controller]")]
     [ApiController]
     public class AuthController : Controller
     {
-        private readonly InstituteManagementDb _context;
         private readonly JwtServices _jwtServices;
-
-        public AuthController(InstituteManagementDb context, JwtServices jwtServices)
+        public AuthController(JwtServices jwtServices)
         {
-            _context = context;
             _jwtServices = jwtServices;
         }
 
-        [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] User user)
+        [AllowAnonymous]
+        [HttpPost("Login")]
+        public async Task<ActionResult<LoginRespond>> Login(Loginmodules request)
         {
-            // Hash the password before saving
-            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(user.PasswordHash);
-
-            // Add the user to the database
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-
-            return Ok(new { message = "User registered successfully" });
+            var result = await _jwtServices.Authenticate(request);
+            if (result is null)
+            {
+                ModelState.AddModelError(string.Empty, "Invalid username or password");
+                return View();
+            }
+            return View(result);
         }
 
-
-        [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] User loginRequest)
+        [AllowAnonymous]
+        [HttpGet("Register")]
+        public IActionResult Register()
         {
-            if (loginRequest == null || string.IsNullOrEmpty(loginRequest.Email) || string.IsNullOrEmpty(loginRequest.PasswordHash))
-            {
-                return BadRequest("Email and Password are required.");
-            }
-
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.Email == loginRequest.Email);
-
-            if (user == null)
-            {
-                return Unauthorized("Invalid credentials.");
-            }
-
-            bool passwordValid = BCrypt.Net.BCrypt.Verify(loginRequest.PasswordHash, user.PasswordHash);
-            if (!passwordValid)
-            {
-                return Unauthorized("Invalid credentials.");
-            }
-
-            var token = _jwtServices.GenerateToken(user);
-            return Ok(new { token });
+            return View();
         }
 
-
+        [AllowAnonymous]
+        [HttpPost("Register")]
+        public IActionResult Register(Loginmodules request)
+        {
+            // TO DO: implement register logic here
+            return View();
+        }
     }
 }

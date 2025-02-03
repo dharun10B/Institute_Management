@@ -3,16 +3,19 @@ using Institute_Management.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
 namespace Institute_Management.Migrations
 {
-    [DbContext(typeof(InstituteManagementDb))]
-    partial class InstituteManagementDbModelSnapshot : ModelSnapshot
+    [DbContext(typeof(InstituteManagement))]
+    [Migration("20250203132014_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -134,6 +137,16 @@ namespace Institute_Management.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Email = "admin123@gmail.com",
+                            PasswordHash = "jSl3cQnIE647KMsck4rAU9BJMUMnz5cwJPYiGJVc6ZhFBwNWLWTFJ/ccqYVAIpjakN2U1SXLzrisKOMd/CCHnA==",
+                            Role = "admin",
+                            Username = "admin"
+                        });
                 });
 
             modelBuilder.Entity("Institute_Management.Models.Course", b =>
